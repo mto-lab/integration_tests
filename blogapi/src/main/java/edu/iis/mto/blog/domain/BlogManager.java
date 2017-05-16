@@ -16,7 +16,9 @@ import edu.iis.mto.blog.domain.model.User;
 import edu.iis.mto.blog.services.BlogService;
 
 @Service
-@Transactional(propagation = Propagation.REQUIRED)
+@Transactional(propagation = Propagation.REQUIRED) 
+// DLA KAZDEJ METODY JEST TWORZONA TRANSAKCJA NA BAZIE DANYCH 
+// http://stackoverflow.com/questions/10740021/transactionalpropagation-propagation-required
 public class BlogManager extends DomainService implements BlogService {
 
     @Override

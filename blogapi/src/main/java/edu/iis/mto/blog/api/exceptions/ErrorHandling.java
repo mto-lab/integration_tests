@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import edu.iis.mto.blog.domain.errors.DomainError;
 
-@ControllerAdvice
+@ControllerAdvice //PRZECHWYTYWANIE EXCEPTIONS I ZARZADZANIE NIMI - GLOBALNIE DLA CALEJ APLIKACJI
 public class ErrorHandling {
 
     private final static Logger logger = LoggerFactory.getLogger(ErrorHandling.class);
