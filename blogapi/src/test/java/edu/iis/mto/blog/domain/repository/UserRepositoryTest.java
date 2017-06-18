@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.iis.mto.blog.domain.model.AccountStatus;
@@ -53,13 +54,15 @@ public class UserRepositoryTest {
         Assert.assertThat(users.get(0).getEmail(), Matchers.equalTo(persistedUser.getEmail()));
     }
 
-    @Ignore
     @Test
     public void shouldStoreANewUser() {
-
         User persistedUser = repository.save(user);
-
         Assert.assertThat(persistedUser.getId(), Matchers.notNullValue());
     }
 
+    @Test(expected=InvalidDataAccessApiUsageException.class)
+    public void findUserShouldThrowException_searchValuesAreNull(){
+    	List<User> users = repository.findByFirstNameContainingOrLastNameContainingOrEmailContainingAllIgnoreCase(null, null, null);
+    }
+    
 }
