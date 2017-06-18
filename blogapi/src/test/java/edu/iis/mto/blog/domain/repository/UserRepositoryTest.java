@@ -2,6 +2,7 @@ package edu.iis.mto.blog.domain.repository;
 
 import java.util.List;
 
+import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;
@@ -62,7 +63,23 @@ public class UserRepositoryTest {
 
     @Test(expected=InvalidDataAccessApiUsageException.class)
     public void findUserShouldThrowException_searchValuesAreNull(){
-    	List<User> users = repository.findByFirstNameContainingOrLastNameContainingOrEmailContainingAllIgnoreCase(null, null, null);
+    	repository.findByFirstNameContainingOrLastNameContainingOrEmailContainingAllIgnoreCase(null, null, null);
     }
     
+    @Test
+    public void findUserShouldNotReturnEmptyList_searchValuesAreEmpty() {
+    	List<User> usersAllbyCustomMethod = repository.findByFirstNameContainingOrLastNameContainingOrEmailContainingAllIgnoreCase("", "", "");
+    	List<User> usersAll = repository.findAll();
+    	MatcherAssert.assertThat("find method with empty arguments, return all users",usersAllbyCustomMethod, Matchers.not(Matchers.is(Matchers.emptyCollectionOf(User.class))));    	
+    	//MatcherAssert.assertThat(usersAllbyCustomMethod, Matchers.containsInAnyOrder(usersAll)); say what?
+    }
+    
+    @Test
+    public void findUserShouldReturnUser_containingPartOfName() {
+    	repository.deleteAll();
+    	User persistedUser = repository.save(user);
+    	String namePart = persistedUser.getFirstName().substring(0, 3);
+		List<User> users = repository.findByFirstNameContainingOrLastNameContainingOrEmailContainingAllIgnoreCase(namePart, "", "");
+		MatcherAssert.assertThat("find method with filled firs name argument return specific users", users, Matchers.contains(persistedUser));
+    }
 }
