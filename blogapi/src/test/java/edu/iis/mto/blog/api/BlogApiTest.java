@@ -1,8 +1,11 @@
 package edu.iis.mto.blog.api;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import javax.persistence.EntityNotFoundException;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -22,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.iis.mto.blog.api.request.UserRequest;
 import edu.iis.mto.blog.dto.Id;
+import edu.iis.mto.blog.dto.UserData;
 import edu.iis.mto.blog.services.BlogService;
 import edu.iis.mto.blog.services.DataFinder;
 
@@ -58,9 +62,16 @@ public class BlogApiTest {
 		UserRequest user = new UserRequest();
 		Mockito.when(blogService.createUser(user)).thenThrow(DataIntegrityViolationException.class);
 		String content = writeJson(user);
-		MatcherAssert.assertThat(content, Matchers.notNullValue());
 		mvc.perform(post("/blog/user").contentType(MediaType.APPLICATION_JSON_UTF8).content(content))
 				.andExpect(status().is(409)).andExpect(status().isConflict());
+	}
+
+	@Test
+	public void postBlogShouldResponseWithCode404_searchingForUnknowUser() throws Exception {
+		Long id = -1l;
+		Mockito.when(finder.getUserData(-1l)).thenThrow(EntityNotFoundException.class);
+		mvc.perform(get("/blog/user/" + id).accept(MediaType.APPLICATION_JSON_UTF8)).andExpect(status().is(404))
+				.andExpect(status().isNotFound());
 	}
 
 	private String writeJson(Object obj) throws JsonProcessingException {
