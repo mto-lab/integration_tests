@@ -14,6 +14,7 @@ import edu.iis.mto.blog.dto.UserData;
 @Component
 public class BlogDataMapperImpl implements DataMapper {
 
+	//Mapowanie obiektow [java beans] z jednej reprezentacji na inna
     private final ModelMapper mapper = new ModelMapper();
 
     public BlogDataMapperImpl() {

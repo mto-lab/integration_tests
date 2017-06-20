@@ -1,5 +1,8 @@
 package edu.iis.mto.blog.rest.test;
 
+import java.math.BigInteger;
+import java.security.SecureRandom;
+
 import org.junit.BeforeClass;
 
 import com.jayway.restassured.RestAssured;
@@ -28,5 +31,7 @@ public class FunctionalTests {
         RestAssured.baseURI = baseHost;
 
     }
-
+    protected String nextSessionId() {
+        return new BigInteger(130, new SecureRandom()).toString(32);
+    }
 }
