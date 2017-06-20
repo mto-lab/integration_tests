@@ -30,10 +30,14 @@ public class BlogManager extends DomainService implements BlogService {
 	@Override
 	public Long createPost(Long userId, PostRequest postRequest) {
 		User user = userRepository.findOne(userId);
-		BlogPost post = mapper.mapToEntity(postRequest);
-		post.setUser(user);
-		blogPostRepository.save(post);
-		return post.getId();
+		if (user.getAccountStatus().equals(AccountStatus.CONFIRMED)) {
+			BlogPost post = mapper.mapToEntity(postRequest);
+			post.setUser(user);
+			blogPostRepository.save(post);
+			return post.getId();
+		} else {
+			throw new DomainError("Wron status");
+		}
 	}
 
 	@Override
@@ -41,7 +45,7 @@ public class BlogManager extends DomainService implements BlogService {
 		User user = userRepository.findOne(userId);
 		BlogPost post = blogPostRepository.findOne(postId);
 		if (post.getUser().getId().equals(userId)) {
-			throw new DomainError("cannot like own post");
+			throw new DomainError("User "+userId.longValue()+" cannot like own post "+postId.longValue());
 		}
 		if (user.getAccountStatus().equals(AccountStatus.CONFIRMED)) {
 			Optional<LikePost> existingLikeForPost = likePostRepository.findByUserAndPost(user, post);
