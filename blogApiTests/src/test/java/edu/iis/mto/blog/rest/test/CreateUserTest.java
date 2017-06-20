@@ -9,11 +9,25 @@ import com.jayway.restassured.http.ContentType;
 
 public class CreateUserTest extends FunctionalTests {
 
-    @Test
-    public void postFormWithMalformedRequestDataReturnsBadRequest() {
-        JSONObject jsonObj = new JSONObject().put("email", "tracy@domain.com");
-        RestAssured.given().accept(ContentType.JSON).header("Content-Type", "application/json;charset=UTF-8")
-                .body(jsonObj.toString()).expect().log().all().statusCode(HttpStatus.SC_CREATED).when()
-                .post("/blog/user");
-    }
+	@Test
+	public void postFormWithMalformedRequestDataReturnsBadRequest() {
+		JSONObject jsonObj = new JSONObject().put("email", "tracy@domain.com");
+		RestAssured.given().accept(ContentType.JSON).header("Content-Type", "application/json;charset=UTF-8")
+				.body(jsonObj.toString()).expect().log().all().statusCode(HttpStatus.SC_CREATED).when()
+				.post("/blog/user");
+	}
+
+	@Test
+	public void createUserShouldHaveUniqueEmailAddress() {
+		JSONObject firstUser = new JSONObject().put("email", "same.email@domain.com").put("firstname", "Test_1")
+				.put("secondname", "");
+		JSONObject secondUser = new JSONObject().put("email", "same.email@domain.com").put("firstname", "Test_2")
+				.put("secondname", "");
+		RestAssured.given().accept(ContentType.JSON).header("Content-Type", "application/json;charset=UTF-8")
+		.body(firstUser.toString()).expect().log().all().statusCode(HttpStatus.SC_CREATED).when()
+		.post("/blog/user");
+		RestAssured.given().accept(ContentType.JSON).header("Content-Type", "application/json;charset=UTF-8")
+				.body(secondUser.toString()).expect().log().all().statusCode(HttpStatus.SC_CONFLICT).when()
+				.post("/blog/user");
+	}
 }

@@ -69,7 +69,7 @@ public class BlogApiTest {
 	@Test
 	public void postBlogShouldResponseWithCode404_searchingForUnknowUser() throws Exception {
 		Long id = -1l;
-		Mockito.when(finder.getUserData(-1l)).thenThrow(EntityNotFoundException.class);
+		Mockito.when(finder.getUserData(id)).thenThrow(EntityNotFoundException.class);
 		mvc.perform(get("/blog/user/" + id).accept(MediaType.APPLICATION_JSON_UTF8)).andExpect(status().is(404))
 				.andExpect(status().isNotFound());
 	}
