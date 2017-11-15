@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import edu.iis.mto.blog.api.request.PostRequest;
 import edu.iis.mto.blog.api.request.UserRequest;
+import edu.iis.mto.blog.domain.model.AccountStatus;
 import edu.iis.mto.blog.dto.Id;
 import edu.iis.mto.blog.dto.PostData;
 import edu.iis.mto.blog.dto.UserData;
@@ -54,6 +55,15 @@ public class BlogApi {
         logger.debug("get user endpoint called for user id '{}'", userId);
         UserData user = finder.getUserData(userId);
         return user;
+    }
+    
+    @ApiOperation(value = "get user account status")
+    @RequestMapping(method = RequestMethod.GET, path = "/user/{id}/status")
+    @ResponseStatus(HttpStatus.OK)
+    public AccountStatus getUserAccountStatus(@PathVariable("id") Long userId) {
+        logger.debug("get user endpoint called for user id '{}'", userId);
+        AccountStatus status = finder.getAccountStatus(userId);
+        return status;
     }
 
     @ApiOperation(value = "find users based on email or first name or last name")
