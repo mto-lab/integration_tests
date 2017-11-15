@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import edu.iis.mto.blog.domain.model.AccountStatus;
 import edu.iis.mto.blog.domain.model.BlogPost;
 import edu.iis.mto.blog.domain.model.User;
 import edu.iis.mto.blog.dto.PostData;
@@ -48,5 +49,11 @@ public class BlogDataFinder extends DomainService implements DataFinder {
         List<BlogPost> posts = blogPostRepository.findByUser(user);
         return posts.stream().map(post -> mapper.mapToDto(post)).collect(Collectors.toList());
     }
+
+	@Override
+	public AccountStatus getAccountStatus(Long userId) {
+		User user = userRepository.findOne(userId);		
+		return user.getAccountStatus();
+	}
 
 }
